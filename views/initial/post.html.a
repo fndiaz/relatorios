@@ -1,0 +1,13 @@
+{{extend 'layout.html'}}
+
+{{block center}}
+
+{{for post in comments:}}
+<div class="post">
+  você 
+  Disse <span style="color : red" class="post_body">{{=post.body}}</span>
+</div>
+{{pass}}
+{{=form}}
+
+{{end}}

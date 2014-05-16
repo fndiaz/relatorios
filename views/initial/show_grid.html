@@ -1,0 +1,28 @@
+{{extend 'layout.html'}}
+
+
+{{block coluna2}}
+<div class="span6">
+<div class="well">
+
+{{=form.custom.begin}}
+<legend>Formulário</legend>
+
+<div id="div_origem">
+<label>Ramal:</label>
+{{=form.custom.widget.ramal}}
+</div>
+
+<div id="div_origem">
+<label>Data:</label>
+{{=form.custom.widget.data}}
+</div>
+
+<br>
+{{=form.custom.submit}}
+{{=form.custom.end}}
+
+</div>
+</div>
+{{end}}
+
