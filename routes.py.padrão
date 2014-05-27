@@ -6,11 +6,14 @@ routers = dict(
 	applications=['relatorios', 'admin',]
     ),
 
-  relatorios=dict(
-    default_controller='initial',
-    default_function='principal',
-    controllers=['initial', 'manager'],
-    functions=['principal', 'show_gravacoes', 'link_player', 'form_gravacoes', 'submit_form']
+    relatorios=dict(
+        default_controller='initial',
+        default_function='principal',
+        controllers=['initial', 'manager'],
+        functions=['principal', 'show_gravacoes', 'link_player', 'form_gravacoes', 'submit_form',
+                   'show_saintes', 'form_saintes', 'form_entrantes', 'show_grid', 'post', 'teste', 'post.load',
+                   'login', 'logout']
     )
+
 
 )

@@ -23,6 +23,12 @@ def show_gravacoes():
 	queryset = (query1) & (query2) & (query3) & (query4) & (query5)
 	print queryset
 
+	if session.usuario != 'diretoria':
+		queryset = add_query(queryset)
+	print '-----------'
+	print queryset
+
+
 	links = [dict(header='',body=lambda row: 
 			A(IMG(_src=URL("relatorios", "static/images", "audio_ok2.png")), #imagem
 				  _href =URL("link_player", vars=dict(date=row.calldate, unique=row.AD2_uniqueid, link='player')), _target='_blank') ),
@@ -181,6 +187,7 @@ def show_grid(queryset, title):
 	return(grid)
 
 def login():
+	print 'entrou login'
 	form = SQLFORM.factory(
 		Field("usuario", requires = IS_NOT_EMPTY(error_message=
 			T("valor não pode ser nulo"))),
@@ -195,28 +202,35 @@ def login():
 		senha_dig = form.vars.senha
 		print 'usuario digitado:%s  senha digitada:%s' %(usuario_dig, senha_dig) 
 
-		con = teste(usuario_dig)#funçao
-		print con
-
-		if con == 'nulo':
-			print "Usuario incorreto"
-			response.flash = 'Usuário não existe'
-		else:
-			usuario = con[0][0]
-			senha = con[0][1]
-			senha = base64.b64decode(senha)
-			print usuario
-			print senha
-			if senha_dig == senha:
-				print 'senha ok'
-				session.usuario = usuario
-				session.senha = senha
-				session.flash='Logado com %s' %(usuario)
-				redirect(URL("form_gravacoes"))
-			else:
-				print 'senha errata'
-				session.flash='Senha incorreta'
-				redirect(URL("login"))
+		#con = teste(usuario_dig)#funçao usuario admanager
+		aut = autentica(usuario_dig, senha_dig)
+		if aut is False:
+			session.flash='login incorreto'
+			redirect(URL("login"))
+		if aut is True:
+			session.usuario = usuario_dig
+			session.flash='Logado com %s' %(usuario_dig)
+			redirect(URL("form_gravacoes"))
+		
+		#Logando por usuario admanager
+		#if con == 'nulo':
+		#	print "Usuario incorreto"
+		#	response.flash = 'Usuário não existe'
+		#else:
+		#	usuario = con[0][0]
+		#	senha = con[0][1]
+		#	print base64.b64decode(senha)
+		#	senha = base64.b64decode(senha)
+		#	if senha_dig == senha:
+		#		print 'senha ok'
+		#		session.usuario = usuario
+		#		session.senha = senha
+		#		session.flash='Logado com %s' %(usuario)
+		#		redirect(URL("form_gravacoes"))
+		#	else:
+		#		print 'senha errata'
+		#		session.flash='Senha incorreta'
+		#		redirect(URL("login"))
 	elif form.errors:
 		response.flash = 'Ops, algo não está correto'			
 					
@@ -238,9 +252,23 @@ def teste(usuario_dig):
 	
 	return (con)
 
+def autentica(usuario_dig, senha_dig):
+	print 'autentica'
+	users = [{'nome': 'diretoria', 'senha': '210845'}, 
+			 {'nome':'tecnologia', 'senha': '123456'},
+			 {'nome': 'admin', 'senha':'123456'}]
 
+	for user in users:
+		if user['nome'] == usuario_dig:
+			if user['senha'] == senha_dig:
+				return True
+	return False
 
-
+def add_query(queryset):
+	for ramal in session.ls_ramais:
+		queryset=queryset & ~(db.cdr.origem == ramal)
+		queryset=queryset & ~(db.cdr.dst == ramal)
+	return queryset
 
 
 

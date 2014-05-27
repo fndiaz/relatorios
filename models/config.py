@@ -101,6 +101,9 @@ if not 'dst' in session:
 if not 'data' in session:
     session.data = ''
 
+if not 'ls_ramais' in session:
+    session.ls_ramais = [1001, 1011, 1013, 1015]
+
 if not 'form_ano' in session:
     now = datetime.datetime.now()
     ano = now.year
